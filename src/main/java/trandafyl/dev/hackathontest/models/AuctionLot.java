@@ -1,22 +1,23 @@
-package trandafyl.dev.hackatontest.models;
+package trandafyl.dev.hackathontest.models;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Builder;
+import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "auction")
-@Getter
-@Setter
+@Builder
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Auction {
+public class AuctionLot {
     @Id
+    @Column(name = "lot_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -48,7 +49,7 @@ public class Auction {
     @Enumerated(EnumType.STRING)
     private List<AuctionCategory> categories = new ArrayList<>();
 
-    @OneToMany(mappedBy = "auction")
+    @OneToMany(mappedBy = "auctionLot")
     private List<AuctionBid> auctionBids = new ArrayList<>();
 
 }

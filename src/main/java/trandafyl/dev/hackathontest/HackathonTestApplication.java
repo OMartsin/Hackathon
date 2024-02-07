@@ -1,13 +1,13 @@
-package trandafyl.dev.hackatontest;
+package trandafyl.dev.hackathontest;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class HackatonTestApplication {
+public class HackathonTestApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(HackatonTestApplication.class, args);
+        SpringApplication.run(HackathonTestApplication.class, args);
     }
 
 }

@@ -1,10 +1,10 @@
-package trandafyl.dev.hackatontest;
+package trandafyl.dev.hackathontest;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class HackatonTestApplicationTests {
+class HackathonTestApplicationTests {
 
     @Test
     void contextLoads() {
