@@ -55,14 +55,4 @@ public class AuctionLotController {
 
         return ResponseEntity.noContent().build();
     }
-
-    @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<String> handleException(NoSuchElementException e) {
-        return ResponseEntity.notFound().build();
-    }
-
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<String> handleException(ConstraintViolationException e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
-    }
 }
