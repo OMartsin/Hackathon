@@ -1,4 +1,4 @@
-package trandafyl.dev.hackatontest.config;
+package trandafyl.dev.hackathontest.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,8 +13,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import trandafyl.dev.hackatontest.handlers.oauth.OAuth2LoginSuccessHandler;
-import trandafyl.dev.hackatontest.services.CustomOAuth2UserService;
+import trandafyl.dev.hackathontest.handlers.oauth.OAuth2LoginSuccessHandler;
+import trandafyl.dev.hackathontest.services.CustomOAuth2UserService;
 
 import java.util.List;
 

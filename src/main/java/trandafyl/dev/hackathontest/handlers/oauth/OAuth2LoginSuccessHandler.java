@@ -1,4 +1,4 @@
-package trandafyl.dev.hackatontest.handlers.oauth;
+package trandafyl.dev.hackathontest.handlers.oauth;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,10 +9,10 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import trandafyl.dev.hackatontest.models.CustomOAuth2User;
-import trandafyl.dev.hackatontest.models.User;
-import trandafyl.dev.hackatontest.models.UserRole;
-import trandafyl.dev.hackatontest.repositories.UserRepository;
+import trandafyl.dev.hackathontest.models.CustomOAuth2User;
+import trandafyl.dev.hackathontest.models.User;
+import trandafyl.dev.hackathontest.models.UserRole;
+import trandafyl.dev.hackathontest.repositories.UserRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

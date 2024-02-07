@@ -1,4 +1,4 @@
-package trandafyl.dev.hackatontest.models;
+package trandafyl.dev.hackathontest.models;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;

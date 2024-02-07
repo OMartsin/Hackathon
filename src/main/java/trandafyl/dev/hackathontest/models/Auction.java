@@ -1,4 +1,4 @@
-package trandafyl.dev.hackatontest.models;
+package trandafyl.dev.hackathontest.models;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
