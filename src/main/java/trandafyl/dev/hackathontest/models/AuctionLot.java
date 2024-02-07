@@ -63,4 +63,13 @@ public class AuctionLot {
 
     @OneToMany(mappedBy = "auctionLot")
     private List<AuctionBid> auctionBids = new ArrayList<>();
+
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User creator;
+
+    @JsonManagedReference
+    public List<AuctionBid> getAuctionBids() {
+        return auctionBids;
+    }
 }

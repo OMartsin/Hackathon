@@ -33,4 +33,14 @@ public class AuctionBid {
 
     @ManyToOne
     private AuctionLot auctionLot;
+
+    @JsonBackReference
+    public AuctionLot getAuctionLot() {
+        return auctionLot;
+    }
+
+    @JsonBackReference
+    public User getUser() {
+        return user;
+    }
 }
