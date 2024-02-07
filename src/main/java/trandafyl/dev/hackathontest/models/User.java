@@ -1,6 +1,7 @@
 package trandafyl.dev.hackathontest.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,12 +21,12 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Basic(optional = false)
-    @Column(nullable = false, length = 32)
+    @NotNull
+    @Column(length = 32)
     private String username;
 
-    @Basic(optional = false)
-    @Column(nullable = false, length = 64)
+    @NotNull
+    @Column(length = 64)
     private String password;
 
     @OneToMany(mappedBy = "user")

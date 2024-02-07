@@ -1,6 +1,9 @@
 package trandafyl.dev.hackathontest.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Builder;
@@ -21,24 +24,19 @@ public class AuctionLot {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Basic(optional = false)
-    @Column(nullable = false)
+    @NotBlank
+    @NotBlank(message = "The value of 'name' must not be blank")
     private String name;
 
-    @Basic(optional = false)
-    @Column(nullable = false)
+    @NotBlank(message = "The value of 'description' must not be blank")
     private String description;
 
-    @Basic(optional = false)
-    @Column(nullable = false)
+    @NotNull
+    @PositiveOrZero(message = "The value of 'startPrice' must be positive or zero")
     private Double startPrice;
 
-    @Basic(optional = false)
-    @Column(nullable = false)
-    private Double currentPrice;
-
-    @Basic(optional = false)
-    @Column(nullable = false)
+    @NotNull
+    @PositiveOrZero(message = "The value of 'minIncrease' must be positive or zero")
     private Double minIncrease;
 
     @ElementCollection
@@ -51,5 +49,4 @@ public class AuctionLot {
 
     @OneToMany(mappedBy = "auctionLot")
     private List<AuctionBid> auctionBids = new ArrayList<>();
-
 }
