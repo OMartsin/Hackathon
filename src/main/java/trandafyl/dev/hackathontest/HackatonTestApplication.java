@@ -1,4 +1,4 @@
-package trandafyl.dev.hackatontest;
+package trandafyl.dev.hackathontest;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
