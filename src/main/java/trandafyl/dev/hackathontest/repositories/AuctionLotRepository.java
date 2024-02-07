@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 import trandafyl.dev.hackathontest.models.AuctionLot;
 
 @Repository
-public interface AuctionRepository extends JpaRepository<AuctionLot, Long> {
+public interface AuctionLotRepository extends JpaRepository<AuctionLot, Long> {
 
 }
