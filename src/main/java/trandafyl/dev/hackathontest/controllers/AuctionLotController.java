@@ -44,7 +44,7 @@ public class AuctionLotController {
 
     @PutMapping("/{id}")
     public ResponseEntity<AuctionLotResponse> editAuction(@PathVariable long id, @RequestBody AuctionLotRequest editedAuction) {
-        var auction = auctionLotService.addAuction(editedAuction);
+        var auction = auctionLotService.editAuction(id, editedAuction);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(auction);
     }
