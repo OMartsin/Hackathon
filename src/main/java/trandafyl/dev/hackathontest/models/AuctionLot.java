@@ -1,5 +1,7 @@
 package trandafyl.dev.hackathontest.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -8,7 +10,9 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +42,16 @@ public class AuctionLot {
     @NotNull
     @PositiveOrZero(message = "The value of 'minIncrease' must be positive or zero")
     private Double minIncrease;
+
+    @NotNull
+    @PastOrPresent
+    private LocalDateTime startDateTime = LocalDateTime.now();
+
+    @NotNull
+    @Future
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @JsonFormat(pattern = "YYYY-MM-dd HH:mm")
+    private LocalDateTime endDateTime;
 
     @ElementCollection
     @Column(name = "images_links", nullable = false)
