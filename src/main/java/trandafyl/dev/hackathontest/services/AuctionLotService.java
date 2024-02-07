@@ -51,7 +51,7 @@ public class AuctionLotService {
     }
 
 
-    public AuctionLot mapFromDTO(AuctionLotRequest auction) {
+    private AuctionLot mapFromDTO(AuctionLotRequest auction) {
         return AuctionLot
                 .builder()
                 .auctionBids(new ArrayList<>())
@@ -64,7 +64,7 @@ public class AuctionLotService {
                 .build();
     }
 
-    public AuctionLotResponse mapToDTO(AuctionLot auctionLot) {
+    private AuctionLotResponse mapToDTO(AuctionLot auctionLot) {
         return AuctionLotResponse
                 .builder()
                 .auctionBids(auctionLot.getAuctionBids())
