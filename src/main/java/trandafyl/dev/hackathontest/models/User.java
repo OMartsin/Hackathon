@@ -21,13 +21,17 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
-    @Column(length = 32)
+    @Basic(optional = false)
+    @Column(nullable = false, length = 64, unique = true)
+    private String email;
+
+    @Basic(optional = false)
+    @Column(nullable = false, length = 32)
     private String username;
 
-    @NotNull
-    @Column(length = 64)
-    private String password;
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
 
     @OneToMany(mappedBy = "user")
     private List<AuctionBid> auctionBids = new ArrayList<>();
