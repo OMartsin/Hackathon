@@ -11,8 +11,8 @@
     <groupId>trandafyl.dev</groupId>
     <artifactId>HackathonTest</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>HackatonTest</name>
-    <description>HackatonTest</description>
+    <name>HackathonTest</name>
+    <description>HackathonTest</description>
     <properties>
         <java.version>21</java.version>
     </properties>

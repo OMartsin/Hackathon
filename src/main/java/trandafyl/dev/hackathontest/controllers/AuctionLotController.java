@@ -1,6 +1,5 @@
 package trandafyl.dev.hackathontest.controllers;
 
-import jakarta.validation.ConstraintViolationException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,10 +9,9 @@ import trandafyl.dev.hackathontest.dto.AuctionLotResponse;
 import trandafyl.dev.hackathontest.services.AuctionLotService;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("/auction-lot/")
+@RequestMapping("/auction-lots/")
 @AllArgsConstructor
 public class AuctionLotController {
 
@@ -26,7 +24,7 @@ public class AuctionLotController {
         return ResponseEntity.ok(auctions);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}/")
     public ResponseEntity<AuctionLotResponse> getAuction(@PathVariable long id) {
         var auction = auctionLotService.getAuction(id);
 
@@ -42,27 +40,17 @@ public class AuctionLotController {
         return ResponseEntity.status(HttpStatus.CREATED).body(auction);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/")
     public ResponseEntity<AuctionLotResponse> editAuction(@PathVariable long id, @RequestBody AuctionLotRequest editedAuction) {
         var auction = auctionLotService.editAuction(id, editedAuction);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(auction);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}/")
     public ResponseEntity<String> deleteAuction(@PathVariable long id) {
         auctionLotService.deleteAuction(id);
 
         return ResponseEntity.noContent().build();
-    }
-
-    @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<String> handleException(NoSuchElementException e) {
-        return ResponseEntity.notFound().build();
-    }
-
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<String> handleException(ConstraintViolationException e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
     }
 }

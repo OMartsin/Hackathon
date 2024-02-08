@@ -1,5 +1,6 @@
 package trandafyl.dev.hackathontest.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -35,4 +36,9 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<AuctionBid> auctionBids = new ArrayList<>();
+
+    @JsonManagedReference
+    public List<AuctionBid> getAuctionBids() {
+        return auctionBids;
+    }
 }

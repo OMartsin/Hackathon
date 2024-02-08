@@ -4,7 +4,9 @@ import lombok.Builder;
 import lombok.Data;
 import trandafyl.dev.hackathontest.models.AuctionBid;
 import trandafyl.dev.hackathontest.models.AuctionCategory;
+import trandafyl.dev.hackathontest.models.User;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
@@ -12,11 +14,14 @@ import java.util.List;
 public class AuctionLotResponse {
     private Long id;
     private String name;
-    private String description;
+    private User creator;
     private Double startPrice;
     private Double minIncrease;
+    private String description;
     private AuctionBid currentBid;
+    private LocalDateTime endDateTime;
+    private LocalDateTime startDateTime;
     private final List<String> imagesLinks;
-    private final List<AuctionCategory> categories;
     private final List<AuctionBid> auctionBids;
+    private final List<AuctionCategory> categories;
 }

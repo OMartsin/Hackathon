@@ -7,8 +7,9 @@ import trandafyl.dev.hackathontest.dto.AuctionLotRequest;
 import trandafyl.dev.hackathontest.dto.AuctionLotResponse;
 import trandafyl.dev.hackathontest.models.AuctionBid;
 import trandafyl.dev.hackathontest.models.AuctionLot;
-import trandafyl.dev.hackathontest.repositories.AuctionRepository;
+import trandafyl.dev.hackathontest.repositories.AuctionLotRepository;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -16,7 +17,8 @@ import java.util.*;
 @Transactional
 public class AuctionLotService {
 
-    AuctionRepository auctionRepository;
+    private final AuctionLotRepository auctionRepository;
+    private final UserService userService;
 
     public List<AuctionLotResponse> getAuctions() {
         var auctions = auctionRepository.findAll();
@@ -56,10 +58,13 @@ public class AuctionLotService {
                 .builder()
                 .auctionBids(new ArrayList<>())
                 .categories(auction.getCategories())
+                .creator(userService.getUser(auction.getCreatorId()).orElseThrow())
                 .description(auction.getDescription())
+                .endDateTime(auction.getEndDateTime())
                 .imagesLinks(auction.getImagesLinks())
                 .minIncrease(auction.getMinIncrease())
                 .name(auction.getName())
+                .startDateTime(LocalDateTime.now())
                 .startPrice(auction.getStartPrice())
                 .build();
     }
@@ -69,12 +74,31 @@ public class AuctionLotService {
                 .builder()
                 .auctionBids(auctionLot.getAuctionBids())
                 .categories(auctionLot.getCategories())
+                .creator(auctionLot.getCreator())
                 .currentBid(auctionLot.getAuctionBids().stream().max(Comparator.comparing(AuctionBid::getPrice)).orElse(null))
                 .description(auctionLot.getDescription())
+                .endDateTime(auctionLot.getEndDateTime())
                 .id(auctionLot.getId())
                 .imagesLinks(auctionLot.getImagesLinks())
                 .minIncrease(auctionLot.getMinIncrease())
                 .name(auctionLot.getName())
+                .startDateTime(auctionLot.getStartDateTime())
+                .startPrice(auctionLot.getStartPrice())
+                .build();
+    }
+
+    public AuctionLot mapFromResponseDTO(AuctionLotResponse auctionLot) {
+        return AuctionLot
+                .builder()
+                .auctionBids(auctionLot.getAuctionBids())
+                .categories(auctionLot.getCategories())
+                .description(auctionLot.getDescription())
+                .endDateTime(auctionLot.getEndDateTime())
+                .id(auctionLot.getId())
+                .imagesLinks(auctionLot.getImagesLinks())
+                .minIncrease(auctionLot.getMinIncrease())
+                .name(auctionLot.getName())
+                .startDateTime(auctionLot.getStartDateTime())
                 .startPrice(auctionLot.getStartPrice())
                 .build();
     }
