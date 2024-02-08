@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import trandafyl.dev.hackathontest.dto.AuctionLotEditRequest;
+import trandafyl.dev.hackathontest.dto.AuctionLotPartialResponse;
 import trandafyl.dev.hackathontest.dto.AuctionLotRequest;
 import trandafyl.dev.hackathontest.dto.AuctionLotResponse;
 import trandafyl.dev.hackathontest.services.AuctionLotService;
@@ -13,20 +14,19 @@ import trandafyl.dev.hackathontest.services.AuctionLotService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/auction-lots")
 @AllArgsConstructor
 public class AuctionLotController {
 
     private final AuctionLotService auctionLotService;
 
-    @GetMapping
+    @GetMapping("/auction-lots/")
     public ResponseEntity<List<AuctionLotResponse>> getAuctions() {
         var auctions = auctionLotService.getAuctions();
 
         return ResponseEntity.ok(auctions);
     }
 
-    @GetMapping("/{id}/")
+    @GetMapping("/auction-lots/{id}/")
     public ResponseEntity<AuctionLotResponse> getAuction(@PathVariable long id) {
         var auction = auctionLotService.getAuction(id);
 
@@ -35,24 +35,31 @@ public class AuctionLotController {
                 .orElseThrow();
     }
 
-    @PostMapping
+    @PostMapping("/auction-lots/")
     public ResponseEntity<AuctionLotResponse> addAuction(@RequestPart("files") List<MultipartFile> files, @ModelAttribute AuctionLotRequest newAuction) {
         var auction = auctionLotService.addAuction(newAuction, files);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(auction);
     }
 
-    @PutMapping("/{id}/")
+    @PutMapping("/auction-lots/{id}/")
     public ResponseEntity<AuctionLotResponse> editAuction(@PathVariable long id, @ModelAttribute AuctionLotEditRequest editedAuction, @RequestPart("files") List<MultipartFile> files) {
         var auction = auctionLotService.editAuction(id, editedAuction, files);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(auction);
     }
 
-    @DeleteMapping("/{id}/")
+    @DeleteMapping("/auction-lots/{id}/")
     public ResponseEntity<String> deleteAuction(@PathVariable long id) {
         auctionLotService.deleteAuction(id);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("users/{id}/auction-lots/")
+    public ResponseEntity<List<AuctionLotPartialResponse>> getUsersLots(@PathVariable long id){
+        var user = auctionLotService.getUserLots(id);
+
+        return ResponseEntity.ok(user);
     }
 }

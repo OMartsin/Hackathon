@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import trandafyl.dev.hackathontest.config.AuthorizationValidator;
 import trandafyl.dev.hackathontest.dto.AuctionLotEditRequest;
+import trandafyl.dev.hackathontest.dto.AuctionLotPartialResponse;
 import trandafyl.dev.hackathontest.dto.AuctionLotRequest;
 import trandafyl.dev.hackathontest.dto.AuctionLotResponse;
 import trandafyl.dev.hackathontest.mappers.UserMapper;
@@ -26,6 +27,7 @@ public class AuctionLotService {
     private final S3Service s3Service;
     private final AuthorizationValidator authValidator;
     private final AuthService authService;
+    private final UserService userService;
     private final UserMapper userMapper;
 
     public List<AuctionLotResponse> getAuctions() {
@@ -70,6 +72,18 @@ public class AuctionLotService {
         auctionRepository.deleteById(auctionId);
     }
 
+    public List<AuctionLotPartialResponse> getUserLots(long id) {
+        return userService
+                .getUser(id)
+                .orElseThrow()
+                .getAuctionBids()
+                .stream()
+                .map(AuctionBid::getAuctionLot)
+                .map(this::mapToPartialResponseDTO)
+                .distinct()
+                .toList();
+    }
+
     public AuctionLot mapFromDTO(AuctionLotRequest auction, List<String> images) {
         return AuctionLot
                 .builder()
@@ -90,6 +104,23 @@ public class AuctionLotService {
         return AuctionLotResponse
                 .builder()
                 .auctionBids(auctionLot.getAuctionBids())
+                .categories(auctionLot.getCategories())
+                .creator(userMapper.toUserPartialResponse(auctionLot.getCreator()))
+                .currentBid(auctionLot.getAuctionBids().stream().max(Comparator.comparing(AuctionBid::getPrice)).orElse(null))
+                .description(auctionLot.getDescription())
+                .endDateTime(auctionLot.getEndDateTime())
+                .id(auctionLot.getId())
+                .imageNames(auctionLot.getImageNames().stream().map(s3Service::createURL).toList())
+                .minIncrease(auctionLot.getMinIncrease())
+                .name(auctionLot.getName())
+                .startDateTime(auctionLot.getStartDateTime())
+                .startPrice(auctionLot.getStartPrice())
+                .build();
+    }
+
+    public AuctionLotPartialResponse mapToPartialResponseDTO(AuctionLot auctionLot){
+        return AuctionLotPartialResponse
+                .builder()
                 .categories(auctionLot.getCategories())
                 .creator(userMapper.toUserPartialResponse(auctionLot.getCreator()))
                 .currentBid(auctionLot.getAuctionBids().stream().max(Comparator.comparing(AuctionBid::getPrice)).orElse(null))
