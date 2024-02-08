@@ -16,4 +16,12 @@ public class UserService {
     public Optional<User> getUser(long userId){
         return userRepository.findById(userId);
     }
+
+    public Optional<User> getUser(String email){
+        return userRepository.findByEmail(email);
+    }
+
+    public User addUser(User user){
+        return userRepository.save(user);
+    }
 }
