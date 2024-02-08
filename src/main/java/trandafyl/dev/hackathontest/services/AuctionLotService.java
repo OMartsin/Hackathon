@@ -8,6 +8,7 @@ import trandafyl.dev.hackathontest.config.AuthorizationValidator;
 import trandafyl.dev.hackathontest.dto.AuctionLotEditRequest;
 import trandafyl.dev.hackathontest.dto.AuctionLotRequest;
 import trandafyl.dev.hackathontest.dto.AuctionLotResponse;
+import trandafyl.dev.hackathontest.mappers.UserMapper;
 import trandafyl.dev.hackathontest.models.AuctionBid;
 import trandafyl.dev.hackathontest.models.AuctionLot;
 import trandafyl.dev.hackathontest.repositories.AuctionLotRepository;
@@ -25,6 +26,7 @@ public class AuctionLotService {
     private final S3Service s3Service;
     private final AuthorizationValidator authValidator;
     private final AuthService authService;
+    private final UserMapper userMapper;
 
     public List<AuctionLotResponse> getAuctions() {
         var auctions = auctionRepository.findAll();
@@ -73,7 +75,7 @@ public class AuctionLotService {
                 .builder()
                 .auctionBids(new ArrayList<>())
                 .categories(auction.getCategories())
-                .creator(authService.getCurrentUser().orElseThrow())
+                .creator(userMapper.toUser(authService.getCurrentUser().orElseThrow()))
                 .description(auction.getDescription())
                 .endDateTime(auction.getEndDateTime())
                 .imageNames(images)
@@ -89,7 +91,7 @@ public class AuctionLotService {
                 .builder()
                 .auctionBids(auctionLot.getAuctionBids())
                 .categories(auctionLot.getCategories())
-                .creator(auctionLot.getCreator())
+                .creator(userMapper.toUserPartialResponse(auctionLot.getCreator()))
                 .currentBid(auctionLot.getAuctionBids().stream().max(Comparator.comparing(AuctionBid::getPrice)).orElse(null))
                 .description(auctionLot.getDescription())
                 .endDateTime(auctionLot.getEndDateTime())
@@ -124,7 +126,7 @@ public class AuctionLotService {
                 .id(auction.getId())
                 .startDateTime(auction.getStartDateTime())
                 .auctionBids(auction.getAuctionBids())
-                .creator(authService.getCurrentUser().orElseThrow())
+                .creator(userMapper.toUser(authService.getCurrentUser().orElseThrow()))
                 .categories(auctionLot.getCategories())
                 .description(auctionLot.getDescription())
                 .endDateTime(auctionLot.getEndDateTime())
