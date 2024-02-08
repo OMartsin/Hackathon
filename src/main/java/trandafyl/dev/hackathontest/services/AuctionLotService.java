@@ -1,6 +1,5 @@
 package trandafyl.dev.hackathontest.services;
 
-import com.amazonaws.services.pi.model.NotAuthorizedException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,7 +10,6 @@ import trandafyl.dev.hackathontest.dto.AuctionLotRequest;
 import trandafyl.dev.hackathontest.dto.AuctionLotResponse;
 import trandafyl.dev.hackathontest.models.AuctionBid;
 import trandafyl.dev.hackathontest.models.AuctionLot;
-import trandafyl.dev.hackathontest.models.User;
 import trandafyl.dev.hackathontest.repositories.AuctionLotRepository;
 
 import java.time.LocalDateTime;
@@ -24,9 +22,9 @@ import java.util.stream.Stream;
 public class AuctionLotService {
 
     private final AuctionLotRepository auctionRepository;
-    private final UserService userService;
     private final S3Service s3Service;
     private final AuthorizationValidator authValidator;
+    private final AuthService authService;
 
     public List<AuctionLotResponse> getAuctions() {
         var auctions = auctionRepository.findAll();
@@ -75,7 +73,7 @@ public class AuctionLotService {
                 .builder()
                 .auctionBids(new ArrayList<>())
                 .categories(auction.getCategories())
-                .creator(userService.getUser(auction.getCreatorId()).orElseThrow())
+                .creator(authService.getCurrentUser().orElseThrow())
                 .description(auction.getDescription())
                 .endDateTime(auction.getEndDateTime())
                 .imageNames(images)
@@ -126,6 +124,7 @@ public class AuctionLotService {
                 .id(auction.getId())
                 .startDateTime(auction.getStartDateTime())
                 .auctionBids(auction.getAuctionBids())
+                .creator(authService.getCurrentUser().orElseThrow())
                 .categories(auctionLot.getCategories())
                 .description(auctionLot.getDescription())
                 .endDateTime(auctionLot.getEndDateTime())

@@ -5,6 +5,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import trandafyl.dev.hackathontest.models.User;
 
+import java.util.Optional;
+
 @Service
 @AllArgsConstructor
 public class AuthService {
@@ -28,6 +30,11 @@ public class AuthService {
                 auth.getAuthorities()
                         .stream()
                         .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
+    }
+
+    public Optional<User> getCurrentUser(){
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userService.getUser(email);
     }
 
 }
