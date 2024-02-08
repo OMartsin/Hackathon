@@ -15,7 +15,6 @@ public class AuctionLotEditRequest {
     private Double startPrice;
     private Double minIncrease;
     private LocalDateTime endDateTime;
-    private long creatorId;
     private List<String> imageNames;
     private List<AuctionCategory> categories;
 }
