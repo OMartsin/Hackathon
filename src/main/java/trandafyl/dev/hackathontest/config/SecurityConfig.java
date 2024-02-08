@@ -37,7 +37,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/", "/error", "/login/**", "/webjars/**").permitAll()
-                            .requestMatchers(HttpMethod.GET, "/auction-lots/", "/auction-lots/{id}",
+                            .requestMatchers(HttpMethod.GET, "/auction-lots/", "/auction-lots/{id}/",
                                     "/auction-lots/{lot_id}/bids/", "/auction-lots/{lot_id}/bids/{bid_id}/")
                             .permitAll()
                     .anyRequest().authenticated();

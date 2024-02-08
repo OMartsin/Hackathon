@@ -13,7 +13,7 @@ import trandafyl.dev.hackathontest.services.AuctionLotService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/auction-lots/")
+@RequestMapping("/auction-lots")
 @AllArgsConstructor
 public class AuctionLotController {
 
