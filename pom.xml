@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>trandafyl.dev</groupId>
-    <artifactId>HackatonTest</artifactId>
+    <artifactId>HackathonTest</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>HackatonTest</name>
     <description>HackatonTest</description>
