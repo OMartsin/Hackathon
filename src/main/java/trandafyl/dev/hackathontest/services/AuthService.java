@@ -3,6 +3,7 @@ package trandafyl.dev.hackathontest.services;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import trandafyl.dev.hackathontest.dto.UserResponse;
 import trandafyl.dev.hackathontest.models.User;
 
 import java.util.Optional;
@@ -32,7 +33,7 @@ public class AuthService {
                         .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
     }
 
-    public Optional<User> getCurrentUser(){
+    public Optional<UserResponse> getCurrentUser(){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return userService.getUser(email);
     }

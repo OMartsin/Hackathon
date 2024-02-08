@@ -11,6 +11,6 @@ import java.time.LocalDateTime;
 public class AuctionBidResponse {
     private Long id;
     private Double price;
-    private User user;
+    private UserPartialResponse user;
     private LocalDateTime bidAt;
 }

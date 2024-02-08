@@ -14,7 +14,7 @@ import java.util.List;
 public class AuctionLotResponse {
     private Long id;
     private String name;
-    private User creator;
+    private UserPartialResponse creator;
     private Double startPrice;
     private Double minIncrease;
     private String description;

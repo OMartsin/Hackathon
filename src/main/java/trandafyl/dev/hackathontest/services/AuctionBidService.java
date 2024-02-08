@@ -9,6 +9,7 @@ import trandafyl.dev.hackathontest.config.BidPlacingException;
 import trandafyl.dev.hackathontest.dto.AuctionBidRequest;
 import trandafyl.dev.hackathontest.dto.AuctionBidResponse;
 import trandafyl.dev.hackathontest.dto.AuctionLotResponse;
+import trandafyl.dev.hackathontest.mappers.UserMapper;
 import trandafyl.dev.hackathontest.models.AuctionBid;
 import trandafyl.dev.hackathontest.repositories.AuctionBidRepository;
 
@@ -23,9 +24,9 @@ import java.util.Optional;
 public class AuctionBidService {
     private final AuctionBidRepository auctionBidRepository;
     private final AuctionLotService auctionLotService;
-    private final UserService userService;
+    private final AuthService authService;
     private final AuthorizationValidator authValidator;
-
+    private final UserMapper userMapper;
 
     public List<AuctionBidResponse> getBids(long lot_id) {
         var bids = auctionBidRepository.findByAuctionLotId(lot_id);
@@ -56,7 +57,7 @@ public class AuctionBidService {
         }
         var lot = optionalLot.get();
 
-        authValidator.checkEditAuthority(lot.getCreator());
+        authValidator.checkEditAuthority(userMapper.toUser(lot.getCreator()));
 
         var optionalBid = auctionBidRepository.findById(bid_id);
         if(optionalBid.isEmpty()) {
@@ -102,7 +103,7 @@ public class AuctionBidService {
                 .bidAt(LocalDateTime.now())
                 .auctionLot(auctionLotService.mapFromResponseDTO(lot))
                 .price(bid.getPrice())
-                .user(userService.getUser(bid.getUserId()).orElseThrow())
+                .user(userMapper.toUser(authService.getCurrentUser().orElseThrow()))
                 .build();
     }
 
@@ -112,7 +113,7 @@ public class AuctionBidService {
                 .id(bid.getId())
                 .bidAt(bid.getBidAt())
                 .price(bid.getPrice())
-                .user(bid.getUser())
+                .user(userMapper.toUserPartialResponse(bid.getUser()))
                 .build();
     }
 }
