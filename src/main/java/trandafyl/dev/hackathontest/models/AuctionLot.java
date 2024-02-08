@@ -52,8 +52,8 @@ public class AuctionLot {
     private LocalDateTime endDateTime;
 
     @ElementCollection
-    @Column(name = "images_links", nullable = false)
-    private List<String> imagesLinks = new ArrayList<>();
+    @Column(name = "image_names", nullable = false)
+    private List<String> imageNames = new ArrayList<>();
 
     @ElementCollection
     @Enumerated(EnumType.STRING)
@@ -62,7 +62,7 @@ public class AuctionLot {
     @OneToMany(mappedBy = "auctionLot")
     private List<AuctionBid> auctionBids = new ArrayList<>();
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User creator;
 

@@ -22,7 +22,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Basic(optional = false)
+    @NotNull
     @Column(nullable = false, length = 64, unique = true)
     private String email;
 
@@ -30,6 +30,7 @@ public class User {
     @Column(nullable = false, length = 32)
     private String username;
 
+    @NotNull
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private UserRole role;

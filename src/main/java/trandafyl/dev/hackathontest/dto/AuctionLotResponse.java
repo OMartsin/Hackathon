@@ -21,7 +21,7 @@ public class AuctionLotResponse {
     private AuctionBid currentBid;
     private LocalDateTime endDateTime;
     private LocalDateTime startDateTime;
-    private final List<String> imagesLinks;
+    private final List<String> imageNames;
     private final List<AuctionBid> auctionBids;
     private final List<AuctionCategory> categories;
 }
