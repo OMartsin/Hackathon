@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trandafyl.dev.hackathontest.dto.UserPartialResponse;
-import trandafyl.dev.hackathontest.models.User;
+import trandafyl.dev.hackathontest.dto.UserResponse;
 import trandafyl.dev.hackathontest.services.UserService;
 
 import java.util.List;
@@ -19,5 +19,12 @@ public class UserController {
         var bidders = userService.getBidders(lotId);
 
         return ResponseEntity.ok(bidders);
+    }
+
+    @GetMapping("users/{id}/")
+    public ResponseEntity<UserResponse> getUser(@PathVariable long id){
+        var user = userService.getUser(id).orElseThrow();
+
+        return ResponseEntity.ok(user);
     }
 }
