@@ -1,5 +1,6 @@
 package trandafyl.dev.hackathontest.config;
 
+import com.amazonaws.services.pi.model.NotAuthorizedException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -18,20 +19,26 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BidPlacingException.class)
     public ResponseEntity<String> handleException(BidPlacingException e) {
-        Arrays.stream(e.getStackTrace()).forEach(log::fatal);
+        Arrays.stream(e.getStackTrace()).forEach(log::warn);
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     }
 
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<String> handleException(NoSuchElementException e) {
-        Arrays.stream(e.getStackTrace()).forEach(log::fatal);
+        Arrays.stream(e.getStackTrace()).forEach(log::warn);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<String> handleException(ConstraintViolationException e) {
-        Arrays.stream(e.getStackTrace()).forEach(log::fatal);
+        Arrays.stream(e.getStackTrace()).forEach(log::warn);
         return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler(NotAuthorizedException.class)
+    public ResponseEntity<String> handleException(NotAuthorizedException e) {
+        Arrays.stream(e.getStackTrace()).forEach(log::warn);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

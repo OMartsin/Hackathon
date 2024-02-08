@@ -1,14 +1,17 @@
 package trandafyl.dev.hackathontest.services;
 
+import com.amazonaws.services.pi.model.NotAuthorizedException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import trandafyl.dev.hackathontest.config.AuthorizationValidator;
 import trandafyl.dev.hackathontest.dto.AuctionLotEditRequest;
 import trandafyl.dev.hackathontest.dto.AuctionLotRequest;
 import trandafyl.dev.hackathontest.dto.AuctionLotResponse;
 import trandafyl.dev.hackathontest.models.AuctionBid;
 import trandafyl.dev.hackathontest.models.AuctionLot;
+import trandafyl.dev.hackathontest.models.User;
 import trandafyl.dev.hackathontest.repositories.AuctionLotRepository;
 
 import java.time.LocalDateTime;
@@ -23,6 +26,7 @@ public class AuctionLotService {
     private final AuctionLotRepository auctionRepository;
     private final UserService userService;
     private final S3Service s3Service;
+    private final AuthorizationValidator authValidator;
 
     public List<AuctionLotResponse> getAuctions() {
         var auctions = auctionRepository.findAll();
@@ -46,6 +50,8 @@ public class AuctionLotService {
     public AuctionLotResponse editAuction(long auctionId, AuctionLotEditRequest editedAuction, List<MultipartFile> files) {
         var auction = auctionRepository.findById(auctionId).orElseThrow();
 
+        authValidator.checkEditAuthority(auction.getCreator());
+
         var images = Stream.concat(files.stream().map(s3Service::uploadFile), auction.getImageNames().stream()).toList();
 
         var mappedAuction = mapFromEditRequestDTO(editedAuction, auction, images);
@@ -57,10 +63,12 @@ public class AuctionLotService {
 
     public void deleteAuction(long auctionId) {
         var auction = auctionRepository.findById(auctionId).orElseThrow();
+
+        authValidator.checkEditAuthority(auction.getCreator());
+
         auction.getImageNames().forEach(s3Service::deleteFile);
         auctionRepository.deleteById(auctionId);
     }
-
 
     public AuctionLot mapFromDTO(AuctionLotRequest auction, List<String> images) {
         return AuctionLot

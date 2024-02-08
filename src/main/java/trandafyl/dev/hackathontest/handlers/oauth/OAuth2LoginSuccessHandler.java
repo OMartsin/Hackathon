@@ -12,10 +12,10 @@ import org.springframework.stereotype.Component;
 import trandafyl.dev.hackathontest.models.CustomOAuth2User;
 import trandafyl.dev.hackathontest.models.User;
 import trandafyl.dev.hackathontest.models.UserRole;
-import trandafyl.dev.hackathontest.repositories.UserRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import trandafyl.dev.hackathontest.services.UserService;
 
 import java.io.IOException;
 import java.util.List;
@@ -24,7 +24,7 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Value("${frontend.url}")
     private String frontendUrl;
@@ -40,7 +40,7 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
             Map<String, Object> attributes = principal.getAttributes();
             String email = attributes.getOrDefault("email", "").toString();
             String name = attributes.getOrDefault("name", "").toString();
-            userRepository.findByEmail(email)
+            userService.getUser(email)
                     .ifPresentOrElse(user -> {
                         DefaultOAuth2User newUser = new DefaultOAuth2User(List.of(new SimpleGrantedAuthority(user.getRole().name())),
                                 attributes, "email");
@@ -52,7 +52,7 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
                         userEntity.setEmail(email);
                         userEntity.setUsername(name);
                         userEntity.setRole(UserRole.ROLE_USER);
-                        userRepository.save(userEntity);
+                        userService.addUser(userEntity);
                         DefaultOAuth2User newUser = new DefaultOAuth2User(List.of(new SimpleGrantedAuthority(userEntity.getRole().name())),
                                 attributes, "email");
                         Authentication securityAuth = new OAuth2AuthenticationToken(newUser, List.of(new SimpleGrantedAuthority(userEntity.getRole().name())),

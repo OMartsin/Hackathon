@@ -2,7 +2,9 @@ package trandafyl.dev.hackathontest.services;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+import trandafyl.dev.hackathontest.config.AuthorizationValidator;
 import trandafyl.dev.hackathontest.config.BidPlacingException;
 import trandafyl.dev.hackathontest.dto.AuctionBidRequest;
 import trandafyl.dev.hackathontest.dto.AuctionBidResponse;
@@ -17,10 +19,13 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 @Transactional
+@Log4j2
 public class AuctionBidService {
     private final AuctionBidRepository auctionBidRepository;
     private final AuctionLotService auctionLotService;
     private final UserService userService;
+    private final AuthorizationValidator authValidator;
+
 
     public List<AuctionBidResponse> getBids(long lot_id) {
         var bids = auctionBidRepository.findByAuctionLotId(lot_id);
@@ -30,6 +35,7 @@ public class AuctionBidService {
 
     public Optional<AuctionBidResponse> addBid(long lot_id, AuctionBidRequest newBid) {
         var optionalLot = auctionLotService.getAuction(lot_id);
+
         if(optionalLot.isPresent()) {
             var lot = optionalLot.get();
             var bid = mapFromDTO(lot, newBid);
@@ -49,6 +55,8 @@ public class AuctionBidService {
             return Optional.empty();
         }
         var lot = optionalLot.get();
+
+        authValidator.checkEditAuthority(lot.getCreator());
 
         var optionalBid = auctionBidRepository.findById(bid_id);
         if(optionalBid.isEmpty()) {
@@ -74,6 +82,10 @@ public class AuctionBidService {
     }
 
     public void deleteBid(long bidId) {
+        var bidder = auctionBidRepository.findById(bidId).orElseThrow().getUser();
+
+        authValidator.checkEditAuthority(bidder);
+
         auctionBidRepository.deleteById(bidId);
     }
 
