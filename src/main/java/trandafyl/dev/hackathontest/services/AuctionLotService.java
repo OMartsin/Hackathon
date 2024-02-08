@@ -102,4 +102,20 @@ public class AuctionLotService {
                 .startPrice(auctionLot.getStartPrice())
                 .build();
     }
+
+    public AuctionLot mapFromEditRequestDTO(AuctionLotEditRequest auctionLot, AuctionLot auction, List<String> fileNames) {
+        return AuctionLot
+                .builder()
+                .id(auction.getId())
+                .startDateTime(auction.getStartDateTime())
+                .auctionBids(auction.getAuctionBids())
+                .categories(auctionLot.getCategories())
+                .description(auctionLot.getDescription())
+                .endDateTime(auctionLot.getEndDateTime())
+                .imageNames(auctionLot.getImageNames())
+                .minIncrease(auctionLot.getMinIncrease())
+                .name(auctionLot.getName())
+                .startPrice(auctionLot.getStartPrice())
+                .build();
+    }
 }
