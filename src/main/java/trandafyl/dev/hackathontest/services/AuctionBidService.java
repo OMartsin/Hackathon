@@ -3,6 +3,7 @@ package trandafyl.dev.hackathontest.services;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import trandafyl.dev.hackathontest.dto.PageResponse;
 import trandafyl.dev.hackathontest.dto.AuctionBidRequest;
 import trandafyl.dev.hackathontest.dto.AuctionBidResponse;
 import trandafyl.dev.hackathontest.dto.AuctionLotResponse;
+import trandafyl.dev.hackathontest.events.models.BidUpdateEvent;
 import trandafyl.dev.hackathontest.mappers.AuctionBidMapper;
 import trandafyl.dev.hackathontest.mappers.UserMapper;
 import trandafyl.dev.hackathontest.models.AuctionBid;
@@ -30,6 +32,7 @@ public class AuctionBidService {
     private final AuthorizationValidator authValidator;
     private final UserMapper userMapper;
     private final AuctionBidMapper bidMapper;
+    private final ApplicationEventPublisher publisher;
 
     public PageResponse<Page<AuctionBidResponse>> getBids(long lot_id, int pageNumber, int pageSize) {
         var bids = auctionBidRepository.findByAuctionLotId(PageRequest.of(pageNumber, pageSize), lot_id);
@@ -76,6 +79,9 @@ public class AuctionBidService {
         newBid.setId(bid.getId());
 
         var result = auctionBidRepository.save(bid);
+
+        publisher.publishEvent(new BidUpdateEvent(result.getAuctionLot().getId(), result.getUser(), result.getPrice()));
+
         return Optional.of(bidMapper.mapToDTO(result));
     }
 
