@@ -1,6 +1,7 @@
 package trandafyl.dev.hackathontest.controllers;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,9 +20,12 @@ public class AuctionLotController {
 
     private final AuctionLotService auctionLotService;
 
-    @GetMapping("/auction-lots/")
-    public ResponseEntity<List<AuctionLotResponse>> getAuctions() {
-        var auctions = auctionLotService.getAuctions();
+    @GetMapping
+    public ResponseEntity<PageResponse<Page<AuctionLotResponse>>> getAuctions(
+            @RequestParam(required = false, defaultValue = "0") int pageNumber,
+                @RequestParam(required = false, defaultValue = "100") int pageSize) {
+
+        var auctions = auctionLotService.getAuctions(pageNumber, pageSize);
 
         return ResponseEntity.ok(auctions);
     }

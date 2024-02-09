@@ -28,10 +28,10 @@ public class AuctionBidService {
     private final AuthorizationValidator authValidator;
     private final UserMapper userMapper;
 
-    public List<AuctionBidResponse> getBids(long lot_id) {
-        var bids = auctionBidRepository.findByAuctionLotId(lot_id);
+    public PageResponse<Page<AuctionBidResponse>> getBids(long lot_id, int pageNumber, int pageSize) {
+        var bids = auctionBidRepository.findByAuctionLotId(PageRequest.of(pageNumber, pageSize), lot_id);
 
-        return bids.stream().map(this::mapToDTO).toList();
+        return new PageResponse<>(bids.map(this::mapToDTO), auctionBidRepository.count());
     }
 
     public Optional<AuctionBidResponse> addBid(long lot_id, AuctionBidRequest newBid) {
