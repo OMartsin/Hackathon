@@ -18,8 +18,10 @@ public class AuctionBidController {
     private final AuctionBidService auctionBidService;
 
     @GetMapping("{lot_id}/bids/")
-    public ResponseEntity<List<AuctionBidResponse>> getBids(@PathVariable long lot_id) {
-        var bids = auctionBidService.getBids(lot_id);
+    public ResponseEntity<PageResponse<Page<AuctionBidResponse>>> getBids(@PathVariable long lot_id,
+                                                                          @RequestParam(required = false, defaultValue = "0") int pageNumber,
+                                                                          @RequestParam(required = false, defaultValue = "100") int pageSize) {
+        var bids = auctionBidService.getBids(lot_id, pageNumber, pageSize);
 
         return ResponseEntity.ok(bids);
     }
