@@ -18,11 +18,7 @@ target/
 *.iws
 *.iml
 *.ipr
-*.cfe
-*.cfs
-*.si
-*.lock
-segments_j
+/AuctionLot/
 
 ### NetBeans ###
 /nbproject/private/
