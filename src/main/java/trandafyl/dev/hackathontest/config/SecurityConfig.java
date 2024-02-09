@@ -35,11 +35,13 @@ public class SecurityConfig {
         return http
                 .headers(headers -> headers.contentTypeOptions(Customizer.withDefaults()))
                 .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/", "/error", "/login/**", "/webjars/**").permitAll()
+                    auth.requestMatchers("/", "/error", "/login/**", "/webjars/**", "/websocket/**").permitAll()
                             .requestMatchers(HttpMethod.GET, "/auction-lots/", "/auction-lots/{id}/",
-                                    "/auction-lots/{lot_id}/bids/", "/auction-lots/{lot_id}/bids/{bid_id}/")
-                            .permitAll()
+                                    "/auction-lots/{lot_id}/bids/", "/auction-lots/{lot_id}/bids/{bid_id}/",
+                                    "/auction-lots/{id}/chat/subscribe/").permitAll()
+                            .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                     .anyRequest().authenticated();
                 })
                 .oauth2Login(oath2 -> {
@@ -54,7 +56,7 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of(frontendUrl,"http://localhost:8080"));
+        configuration.setAllowedOrigins(List.of(frontendUrl, "http://localhost:8080", "http://127.0.0.1:5500"));
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
         configuration.setAllowCredentials(true);

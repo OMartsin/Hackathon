@@ -38,4 +38,9 @@ public class AuthService {
         return userService.getUser(email);
     }
 
+    public User getCurrentUserEntity(){
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userService.getUserEntity(email);
+    }
+
 }

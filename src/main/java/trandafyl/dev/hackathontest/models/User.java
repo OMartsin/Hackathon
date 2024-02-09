@@ -42,4 +42,7 @@ public class User {
     public List<AuctionBid> getAuctionBids() {
         return auctionBids;
     }
+
+    @OneToMany(mappedBy = "sender")
+    private List<AuctionLotChatMessage> sentMessages = new ArrayList<>();
 }
