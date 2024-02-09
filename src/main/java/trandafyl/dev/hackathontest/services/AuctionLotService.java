@@ -2,19 +2,19 @@ package trandafyl.dev.hackathontest.services;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import trandafyl.dev.hackathontest.config.AuthorizationValidator;
+import trandafyl.dev.hackathontest.dto.PageResponse;
 import trandafyl.dev.hackathontest.dto.AuctionLotEditRequest;
-import trandafyl.dev.hackathontest.dto.AuctionLotPartialResponse;
+import trandafyl.dev.hackathontest.dto.AuctionLotListResponse;
 import trandafyl.dev.hackathontest.dto.AuctionLotRequest;
 import trandafyl.dev.hackathontest.dto.AuctionLotResponse;
-import trandafyl.dev.hackathontest.mappers.UserMapper;
-import trandafyl.dev.hackathontest.models.AuctionBid;
-import trandafyl.dev.hackathontest.models.AuctionLot;
+import trandafyl.dev.hackathontest.mappers.AuctionLotMapper;
 import trandafyl.dev.hackathontest.repositories.AuctionLotRepository;
 
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -72,99 +72,8 @@ public class AuctionLotService {
         auctionRepository.deleteById(auctionId);
     }
 
-    public List<AuctionLotPartialResponse> getUserLots(long id) {
-        return userService
-                .getUser(id)
-                .orElseThrow()
-                .getAuctionBids()
-                .stream()
-                .map(AuctionBid::getAuctionLot)
-                .map(this::mapToPartialResponseDTO)
-                .distinct()
-                .toList();
-    }
-
-    public AuctionLot mapFromDTO(AuctionLotRequest auction, List<String> images) {
-        return AuctionLot
-                .builder()
-                .auctionBids(new ArrayList<>())
-                .categories(auction.getCategories())
-                .creator(userMapper.toUser(authService.getCurrentUser().orElseThrow()))
-                .description(auction.getDescription())
-                .endDateTime(auction.getEndDateTime())
-                .imageNames(images)
-                .minIncrease(auction.getMinIncrease())
-                .name(auction.getName())
-                .startDateTime(LocalDateTime.now())
-                .startPrice(auction.getStartPrice())
-                .build();
-    }
-
-    public AuctionLotResponse mapToDTO(AuctionLot auctionLot) {
-        return AuctionLotResponse
-                .builder()
-                .auctionBids(auctionLot.getAuctionBids())
-                .categories(auctionLot.getCategories())
-                .creator(userMapper.toUserPartialResponse(auctionLot.getCreator()))
-                .currentBid(auctionLot.getAuctionBids().stream().max(Comparator.comparing(AuctionBid::getPrice)).orElse(null))
-                .description(auctionLot.getDescription())
-                .endDateTime(auctionLot.getEndDateTime())
-                .id(auctionLot.getId())
-                .imageNames(auctionLot.getImageNames().stream().map(s3Service::createURL).toList())
-                .minIncrease(auctionLot.getMinIncrease())
-                .name(auctionLot.getName())
-                .startDateTime(auctionLot.getStartDateTime())
-                .startPrice(auctionLot.getStartPrice())
-                .build();
-    }
-
-    public AuctionLotPartialResponse mapToPartialResponseDTO(AuctionLot auctionLot){
-        return AuctionLotPartialResponse
-                .builder()
-                .categories(auctionLot.getCategories())
-                .creator(userMapper.toUserPartialResponse(auctionLot.getCreator()))
-                .currentBid(auctionLot.getAuctionBids().stream().max(Comparator.comparing(AuctionBid::getPrice)).orElse(null))
-                .description(auctionLot.getDescription())
-                .endDateTime(auctionLot.getEndDateTime())
-                .id(auctionLot.getId())
-                .imageNames(auctionLot.getImageNames().stream().map(s3Service::createURL).toList())
-                .minIncrease(auctionLot.getMinIncrease())
-                .name(auctionLot.getName())
-                .startDateTime(auctionLot.getStartDateTime())
-                .startPrice(auctionLot.getStartPrice())
-                .build();
-    }
-
-    public AuctionLot mapFromResponseDTO(AuctionLotResponse auctionLot) {
-        return AuctionLot
-                .builder()
-                .auctionBids(auctionLot.getAuctionBids())
-                .categories(auctionLot.getCategories())
-                .description(auctionLot.getDescription())
-                .endDateTime(auctionLot.getEndDateTime())
-                .id(auctionLot.getId())
-                .imageNames(auctionLot.getImageNames())
-                .minIncrease(auctionLot.getMinIncrease())
-                .name(auctionLot.getName())
-                .startDateTime(auctionLot.getStartDateTime())
-                .startPrice(auctionLot.getStartPrice())
-                .build();
-    }
-
-    public AuctionLot mapFromEditRequestDTO(AuctionLotEditRequest auctionLot, AuctionLot auction, List<String> fileNames) {
-        return AuctionLot
-                .builder()
-                .id(auction.getId())
-                .startDateTime(auction.getStartDateTime())
-                .auctionBids(auction.getAuctionBids())
-                .creator(userMapper.toUser(authService.getCurrentUser().orElseThrow()))
-                .categories(auctionLot.getCategories())
-                .description(auctionLot.getDescription())
-                .endDateTime(auctionLot.getEndDateTime())
-                .imageNames(auctionLot.getImageNames())
-                .minIncrease(auctionLot.getMinIncrease())
-                .name(auctionLot.getName())
-                .startPrice(auctionLot.getStartPrice())
-                .build();
+    public AuctionLotListResponse getUserLots(long id) {
+        var lots = auctionRepository.findAllByCreatorId(id);
+        return mapToListDTO(lots);
     }
 }

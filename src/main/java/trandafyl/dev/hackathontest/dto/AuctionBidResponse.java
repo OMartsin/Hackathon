@@ -2,7 +2,6 @@ package trandafyl.dev.hackathontest.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import trandafyl.dev.hackathontest.models.User;
 
 import java.time.LocalDateTime;
 
@@ -11,6 +10,6 @@ import java.time.LocalDateTime;
 public class AuctionBidResponse {
     private Long id;
     private Double price;
-    private UserPartialResponse user;
+    private UserListResponse.PartialUserResponse user;
     private LocalDateTime bidAt;
 }
