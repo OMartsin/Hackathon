@@ -30,10 +30,10 @@ public class AuctionLotService {
     private final UserService userService;
     private final UserMapper userMapper;
 
-    public List<AuctionLotResponse> getAuctions() {
-        var auctions = auctionRepository.findAll();
+    public PageResponse<Page<AuctionLotResponse>> getAuctions(int pageNumber, int pageSize) {
+        var auctions = auctionRepository.findAll(PageRequest.of(pageNumber, pageSize));
 
-        return auctions.stream().map(this::mapToDTO).toList();
+        return new PageResponse<>(auctions.map(this::mapToDTO), auctionRepository.count());
     }
 
     public Optional<AuctionLotResponse> getAuction(long id) {
