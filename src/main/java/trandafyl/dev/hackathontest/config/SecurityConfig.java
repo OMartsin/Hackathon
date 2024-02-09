@@ -36,7 +36,7 @@ public class SecurityConfig {
                 .headers(headers -> headers.contentTypeOptions(Customizer.withDefaults()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/", "/error", "/login/**", "/webjars/**").permitAll()
+                    auth.requestMatchers("/", "/error", "/login/**", "/webjars/**", "/search/**").permitAll()
                             .requestMatchers(HttpMethod.GET, "/auction-lots/", "/auction-lots/{id}/",
                                     "/auction-lots/{lot_id}/bids/", "/auction-lots/{lot_id}/bids/{bid_id}/")
                             .permitAll()
