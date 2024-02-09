@@ -3,9 +3,12 @@ package trandafyl.dev.hackathontest.services;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import trandafyl.dev.hackathontest.config.AuthorizationValidator;
 import trandafyl.dev.hackathontest.config.BidPlacingException;
+import trandafyl.dev.hackathontest.dto.PageResponse;
 import trandafyl.dev.hackathontest.dto.AuctionBidRequest;
 import trandafyl.dev.hackathontest.dto.AuctionBidResponse;
 import trandafyl.dev.hackathontest.dto.AuctionLotResponse;
@@ -28,10 +31,10 @@ public class AuctionBidService {
     private final AuthorizationValidator authValidator;
     private final UserMapper userMapper;
 
-    public List<AuctionBidResponse> getBids(long lot_id) {
-        var bids = auctionBidRepository.findByAuctionLotId(lot_id);
+    public PageResponse<Page<AuctionBidResponse>> getBids(long lot_id, int pageNumber, int pageSize) {
+        var bids = auctionBidRepository.findByAuctionLotId(PageRequest.of(pageNumber, pageSize), lot_id);
 
-        return bids.stream().map(this::mapToDTO).toList();
+        return new PageResponse<>(bids.map(this::mapToDTO), auctionBidRepository.count());
     }
 
     public Optional<AuctionBidResponse> addBid(long lot_id, AuctionBidRequest newBid) {
