@@ -101,7 +101,7 @@ public class AuctionBidService {
 
     private boolean isValidBid(AuctionLotResponse lot, AuctionBid bid){
         return LocalDateTime.now().isBefore(lot.getEndDateTime()) &&
-                !lot.getCreator().equals(bid.getUser()) &&
+                !userMapper.toUser(lot.getCreator()).equals(bid.getUser()) &&
                 ((lot.getCurrentBid() != null && bid.getPrice() - lot.getCurrentBid().getPrice() >= lot.getMinIncrease()) ||
                 (lot.getCurrentBid() == null && bid.getPrice() >= lot.getStartPrice()));
     }
