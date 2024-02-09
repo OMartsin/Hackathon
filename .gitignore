@@ -18,6 +18,11 @@ target/
 *.iws
 *.iml
 *.ipr
+*.cfe
+*.cfs
+*.si
+*.lock
+segments_j
 
 ### NetBeans ###
 /nbproject/private/
