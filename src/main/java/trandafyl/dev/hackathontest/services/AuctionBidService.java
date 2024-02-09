@@ -12,12 +12,12 @@ import trandafyl.dev.hackathontest.dto.PageResponse;
 import trandafyl.dev.hackathontest.dto.AuctionBidRequest;
 import trandafyl.dev.hackathontest.dto.AuctionBidResponse;
 import trandafyl.dev.hackathontest.dto.AuctionLotResponse;
+import trandafyl.dev.hackathontest.mappers.AuctionBidMapper;
 import trandafyl.dev.hackathontest.mappers.UserMapper;
 import trandafyl.dev.hackathontest.models.AuctionBid;
 import trandafyl.dev.hackathontest.repositories.AuctionBidRepository;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,14 +27,14 @@ import java.util.Optional;
 public class AuctionBidService {
     private final AuctionBidRepository auctionBidRepository;
     private final AuctionLotService auctionLotService;
-    private final AuthService authService;
     private final AuthorizationValidator authValidator;
     private final UserMapper userMapper;
+    private final AuctionBidMapper bidMapper;
 
     public PageResponse<Page<AuctionBidResponse>> getBids(long lot_id, int pageNumber, int pageSize) {
         var bids = auctionBidRepository.findByAuctionLotId(PageRequest.of(pageNumber, pageSize), lot_id);
 
-        return new PageResponse<>(bids.map(this::mapToDTO), auctionBidRepository.count());
+        return new PageResponse<>(bids.map(bidMapper::mapToDTO), auctionBidRepository.count());
     }
 
     public Optional<AuctionBidResponse> addBid(long lot_id, AuctionBidRequest newBid) {
@@ -42,12 +42,12 @@ public class AuctionBidService {
 
         if(optionalLot.isPresent()) {
             var lot = optionalLot.get();
-            var bid = mapFromDTO(lot, newBid);
+            var bid = bidMapper.mapFromDTO(lot, newBid);
             if(!isValidBid(lot, bid)){
                 throw new BidPlacingException("The bid is not valid!");
             }
             var result = auctionBidRepository.save(bid);
-            return Optional.of(mapToDTO(result));
+            return Optional.of(bidMapper.mapToDTO(result));
         }
         return Optional.empty();
     }
@@ -72,17 +72,17 @@ public class AuctionBidService {
             throw new BidPlacingException("The bid is not valid!");
         }
 
-        var newBid = mapFromDTO(lot, newBidRequest);
+        var newBid = bidMapper.mapFromDTO(lot, newBidRequest);
         newBid.setId(bid.getId());
 
         var result = auctionBidRepository.save(bid);
-        return Optional.of(mapToDTO(result));
+        return Optional.of(bidMapper.mapToDTO(result));
     }
 
     public Optional<AuctionBidResponse> getBid(long bidId) {
         var optionalBid = auctionBidRepository.findById(bidId);
 
-        return optionalBid.map(this::mapToDTO);
+        return optionalBid.map(bidMapper::mapToDTO);
     }
 
     public void deleteBid(long bidId) {
@@ -98,25 +98,5 @@ public class AuctionBidService {
                 !lot.getCreator().equals(bid.getUser()) &&
                 ((lot.getCurrentBid() != null && bid.getPrice() - lot.getCurrentBid().getPrice() >= lot.getMinIncrease()) ||
                 (lot.getCurrentBid() == null && bid.getPrice() >= lot.getStartPrice()));
-    }
-
-    public AuctionBid mapFromDTO(AuctionLotResponse lot, AuctionBidRequest bid) {
-        return AuctionBid
-                .builder()
-                .bidAt(LocalDateTime.now())
-                .auctionLot(auctionLotService.mapFromResponseDTO(lot))
-                .price(bid.getPrice())
-                .user(userMapper.toUser(authService.getCurrentUser().orElseThrow()))
-                .build();
-    }
-
-    public AuctionBidResponse mapToDTO(AuctionBid bid) {
-        return AuctionBidResponse
-                .builder()
-                .id(bid.getId())
-                .bidAt(bid.getBidAt())
-                .price(bid.getPrice())
-                .user(userMapper.toUserPartialResponse(bid.getUser()))
-                .build();
     }
 }
