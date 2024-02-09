@@ -1,5 +1,6 @@
 package trandafyl.dev.hackathontest.controllers;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import trandafyl.dev.hackathontest.services.AuctionBidService;
 @RestController
 @RequestMapping("/auction-lots/")
 @AllArgsConstructor
+@Tag(name = "Bids")
 public class AuctionBidController {
 
     private final AuctionBidService auctionBidService;
