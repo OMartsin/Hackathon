@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Component
 @AllArgsConstructor
@@ -82,6 +83,7 @@ public class AuctionLotMapper {
                 .name(auctionLot.getName())
                 .startDateTime(auctionLot.getStartDateTime())
                 .startPrice(auctionLot.getStartPrice())
+                .bidsCount(auctionLot.getAuctionBids().size())
                 .build();
     }
 
@@ -111,7 +113,7 @@ public class AuctionLotMapper {
                 .categories(auctionLot.getCategories())
                 .description(auctionLot.getDescription())
                 .endDateTime(auctionLot.getEndDateTime())
-                .imageNames(auctionLot.getImageNames())
+                .imageNames(Stream.of(auctionLot.getImageNames(), fileNames).flatMap(List::stream).toList())
                 .minIncrease(auctionLot.getMinIncrease())
                 .name(auctionLot.getName())
                 .startPrice(auctionLot.getStartPrice())

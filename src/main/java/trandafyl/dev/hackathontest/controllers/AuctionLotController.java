@@ -22,7 +22,7 @@ public class AuctionLotController {
     private final AuctionLotService auctionLotService;
 
     @GetMapping
-    public ResponseEntity<PageResponse<Page<AuctionLotResponse>>> getAuctions(
+    public ResponseEntity<PageResponse<Page<AuctionLotListResponse.AuctionLotPartialResponse>>> getAuctions(
             @RequestParam(required = false, defaultValue = "0") int pageNumber,
             @RequestParam(required = false, defaultValue = "100") int pageSize,
             @RequestParam(required = false, defaultValue = "0") double minPrice,
