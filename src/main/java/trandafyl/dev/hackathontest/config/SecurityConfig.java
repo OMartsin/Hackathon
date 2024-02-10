@@ -35,6 +35,7 @@ public class SecurityConfig {
         return http
                 .headers(headers -> headers.contentTypeOptions(Customizer.withDefaults()))
                 .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/", "/error", "/login/**", "/webjars/**", "/search/**").permitAll()
                             .requestMatchers(HttpMethod.GET, "/auction-lots/", "/auction-lots/{id}/",
