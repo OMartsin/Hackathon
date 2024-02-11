@@ -3,15 +3,14 @@ package trandafyl.dev.hackathontest.services;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import trandafyl.dev.hackathontest.config.AuthorizationValidator;
 import trandafyl.dev.hackathontest.config.BidPlacingException;
-import trandafyl.dev.hackathontest.dto.PageResponse;
-import trandafyl.dev.hackathontest.dto.AuctionBidRequest;
-import trandafyl.dev.hackathontest.dto.AuctionBidResponse;
-import trandafyl.dev.hackathontest.dto.AuctionLotResponse;
+import trandafyl.dev.hackathontest.dto.*;
+import trandafyl.dev.hackathontest.events.models.BidUpdateEvent;
 import trandafyl.dev.hackathontest.mappers.AuctionBidMapper;
 import trandafyl.dev.hackathontest.mappers.UserMapper;
 import trandafyl.dev.hackathontest.models.AuctionBid;
@@ -30,6 +29,8 @@ public class AuctionBidService {
     private final AuthorizationValidator authValidator;
     private final UserMapper userMapper;
     private final AuctionBidMapper bidMapper;
+    private final ApplicationEventPublisher publisher;
+    private final AuthService authService;
 
     public PageResponse<Page<AuctionBidResponse>> getBids(long lot_id, int pageNumber, int pageSize) {
         var bids = auctionBidRepository.findByAuctionLotId(PageRequest.of(pageNumber, pageSize), lot_id);
@@ -76,6 +77,9 @@ public class AuctionBidService {
         newBid.setId(bid.getId());
 
         var result = auctionBidRepository.save(bid);
+
+        publisher.publishEvent(new BidUpdateEvent(result.getAuctionLot().getId(), result.getUser(), result.getPrice()));
+
         return Optional.of(bidMapper.mapToDTO(result));
     }
 
@@ -93,9 +97,15 @@ public class AuctionBidService {
         auctionBidRepository.deleteById(bidId);
     }
 
+    public PageResponse<Page<AuctionBidToUserResponse>> getUserBids(long userId, int pageNumber, int pageSize) {
+        var bids = auctionBidRepository.findByUserId(PageRequest.of(pageNumber, pageSize), userId);
+
+        return new PageResponse<>(bids.map(bidMapper::mapToUserResponseDTO), auctionBidRepository.count());
+    }
+
     private boolean isValidBid(AuctionLotResponse lot, AuctionBid bid){
         return LocalDateTime.now().isBefore(lot.getEndDateTime()) &&
-                !lot.getCreator().equals(bid.getUser()) &&
+                !lot.getCreator().getEmail().equals(authService.getCurrentUsersEmail()) &&
                 ((lot.getCurrentBid() != null && bid.getPrice() - lot.getCurrentBid().getPrice() >= lot.getMinIncrease()) ||
                 (lot.getCurrentBid() == null && bid.getPrice() >= lot.getStartPrice()));
     }

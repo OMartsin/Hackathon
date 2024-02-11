@@ -59,8 +59,8 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
                                 oAuth2AuthenticationToken.getAuthorizedClientRegistrationId());
                         SecurityContextHolder.getContext().setAuthentication(securityAuth);
                     });
-        //this.setAlwaysUseDefaultTargetUrl(true);
-        //this.setDefaultTargetUrl(frontendUrl);
+        this.setAlwaysUseDefaultTargetUrl(true);
+        this.setDefaultTargetUrl(frontendUrl);
         super.onAuthenticationSuccess(request, response, authentication);
     }
 

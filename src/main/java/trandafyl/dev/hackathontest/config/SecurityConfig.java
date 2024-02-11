@@ -15,7 +15,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import trandafyl.dev.hackathontest.handlers.oauth.OAuth2LoginSuccessHandler;
-import trandafyl.dev.hackathontest.services.CustomOAuth2UserService;
 
 import java.util.List;
 
@@ -25,7 +24,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
-    private final CustomOAuth2UserService customOAuth2UserService;
 
     @Value("${frontend.url}")
     private String frontendUrl;
@@ -37,9 +35,9 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/", "/error", "/login/**", "/webjars/**", "/websocket/**").permitAll()
+                    auth.requestMatchers("/", "/error", "/login/**", "/webjars/**", "/websocket/**", "/search/**").permitAll()
                             .requestMatchers(HttpMethod.GET, "/auction-lots/", "/auction-lots/{id}/",
-                                    "/auction-lots/{lot_id}/bids/", "/auction-lots/{lot_id}/bids/{bid_id}/",
+                                    "/auction-lots/{lot_id}/bids/", "/auction-lots/{lot_id}/bids/{bid_id}/", "categories/"
                                     "/auction-lots/{id}/chat/subscribe/").permitAll()
                             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                     .anyRequest().authenticated();

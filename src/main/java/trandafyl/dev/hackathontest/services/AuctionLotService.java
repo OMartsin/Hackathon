@@ -13,6 +13,8 @@ import trandafyl.dev.hackathontest.dto.AuctionLotListResponse;
 import trandafyl.dev.hackathontest.dto.AuctionLotRequest;
 import trandafyl.dev.hackathontest.dto.AuctionLotResponse;
 import trandafyl.dev.hackathontest.mappers.AuctionLotMapper;
+import trandafyl.dev.hackathontest.models.AuctionCategory;
+import trandafyl.dev.hackathontest.models.AuctionLot;
 import trandafyl.dev.hackathontest.repositories.AuctionLotRepository;
 
 import java.util.*;
@@ -28,10 +30,13 @@ public class AuctionLotService {
     private final AuthorizationValidator authValidator;
     private final AuctionLotMapper lotMapper;
 
-    public PageResponse<Page<AuctionLotResponse>> getAuctions(int pageNumber, int pageSize) {
-        var auctions = auctionRepository.findAll(PageRequest.of(pageNumber, pageSize));
+    public PageResponse<Page<AuctionLotListResponse.AuctionLotPartialResponse>> getAuctions(int pageNumber, int pageSize, double minPrice, double maxPrice, List<AuctionCategory> categories) {
+        var pageRequest = PageRequest.of(pageNumber, pageSize);
+        Page<AuctionLot> auctions = (categories == null) ?
+                auctionRepository.findAll(pageRequest) :
+                auctionRepository.findByCategoriesAndPriceRange(categories, minPrice, maxPrice, pageRequest);
 
-        return new PageResponse<>(auctions.map(lotMapper::mapToDTO), auctionRepository.count());
+        return new PageResponse<>(auctions.map(lotMapper::mapToPartialResponseDTO), auctionRepository.count());
     }
 
     public Optional<AuctionLotResponse> getAuction(long id) {

@@ -34,13 +34,17 @@ public class AuthService {
     }
 
     public Optional<UserResponse> getCurrentUser(){
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        String email = getCurrentUsersEmail();
         return userService.getUser(email);
     }
+
 
     public User getCurrentUserEntity(){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return userService.getUserEntity(email);
     }
 
+    public String getCurrentUsersEmail(){
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
 }

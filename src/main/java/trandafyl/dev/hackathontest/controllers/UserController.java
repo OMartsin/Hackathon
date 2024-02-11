@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trandafyl.dev.hackathontest.dto.UserListResponse;
 import trandafyl.dev.hackathontest.dto.UserResponse;
+import trandafyl.dev.hackathontest.services.AuthService;
 import trandafyl.dev.hackathontest.services.UserService;
 
 @RestController
@@ -13,6 +14,7 @@ import trandafyl.dev.hackathontest.services.UserService;
 @Tag(name = "Users")
 public class UserController {
     private final UserService userService;
+    private final AuthService authService;
 
 
     @GetMapping("auction-lots/{lotId}/bidders/")
@@ -25,7 +27,12 @@ public class UserController {
     @GetMapping("users/{id}/")
     public ResponseEntity<UserResponse> getUser(@PathVariable long id){
         var user = userService.getUser(id).orElseThrow();
+        return ResponseEntity.ok(user);
+    }
 
+    @GetMapping("users/")
+    public ResponseEntity<UserResponse> getCurrentUser(){
+        var user = authService.getCurrentUser().orElseThrow();
         return ResponseEntity.ok(user);
     }
 }

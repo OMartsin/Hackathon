@@ -12,4 +12,5 @@ import java.util.List;
 public interface AuctionBidRepository extends JpaRepository<AuctionBid, Long> {
     List<AuctionBid> findByAuctionLotId(Long lotId);
     Page<AuctionBid> findByAuctionLotId(Pageable pageable, Long lotId);
+    Page<AuctionBid> findByUserId(Pageable pageable, Long userId);
 }

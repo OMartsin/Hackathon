@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import trandafyl.dev.hackathontest.dto.*;
+import trandafyl.dev.hackathontest.models.AuctionCategory;
 import trandafyl.dev.hackathontest.services.AuctionLotService;
 
 import java.util.List;
@@ -21,11 +22,14 @@ public class AuctionLotController {
     private final AuctionLotService auctionLotService;
 
     @GetMapping
-    public ResponseEntity<PageResponse<Page<AuctionLotResponse>>> getAuctions(
+    public ResponseEntity<PageResponse<Page<AuctionLotListResponse.AuctionLotPartialResponse>>> getAuctions(
             @RequestParam(required = false, defaultValue = "0") int pageNumber,
-                @RequestParam(required = false, defaultValue = "100") int pageSize) {
+            @RequestParam(required = false, defaultValue = "100") int pageSize,
+            @RequestParam(required = false, defaultValue = "0") double minPrice,
+            @RequestParam(required = false, defaultValue = Double.MAX_VALUE + "") double maxPrice,
+            @RequestParam(required = false) List<AuctionCategory> categories) {
 
-        var auctions = auctionLotService.getAuctions(pageNumber, pageSize);
+        var auctions = auctionLotService.getAuctions(pageNumber, pageSize, minPrice, maxPrice, categories);
 
         return ResponseEntity.ok(auctions);
     }
@@ -60,7 +64,7 @@ public class AuctionLotController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("users/{id}")
+    @GetMapping("users/{id}/")
     public ResponseEntity<AuctionLotListResponse> getUsersLots(@PathVariable long id){
         var user = auctionLotService.getUserLots(id);
 

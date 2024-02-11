@@ -1,6 +1,7 @@
 package trandafyl.dev.hackathontest.dto;
 
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import trandafyl.dev.hackathontest.models.AuctionBid;
 import trandafyl.dev.hackathontest.models.AuctionCategory;
@@ -15,6 +16,7 @@ public class AuctionLotListResponse {
     private long recordsCount;
 
     @Builder
+    @Data
     public static class AuctionLotPartialResponse {
         private Long id;
         private String name;
@@ -27,5 +29,6 @@ public class AuctionLotListResponse {
         private LocalDateTime startDateTime;
         private final List<String> imageNames;
         private final List<AuctionCategory> categories;
+        private int bidsCount;
     }
 }

@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
@@ -15,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Indexed
 @Table(name = "auction")
 @Builder
 @Data
@@ -26,7 +29,7 @@ public class AuctionLot {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @KeywordField
     @NotBlank(message = "The value of 'name' must not be blank")
     private String name;
 
