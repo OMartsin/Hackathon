@@ -30,6 +30,7 @@ public class AuctionBidService {
     private final UserMapper userMapper;
     private final AuctionBidMapper bidMapper;
     private final ApplicationEventPublisher publisher;
+    private final AuthService authService;
 
     public PageResponse<Page<AuctionBidResponse>> getBids(long lot_id, int pageNumber, int pageSize) {
         var bids = auctionBidRepository.findByAuctionLotId(PageRequest.of(pageNumber, pageSize), lot_id);
@@ -104,7 +105,7 @@ public class AuctionBidService {
 
     private boolean isValidBid(AuctionLotResponse lot, AuctionBid bid){
         return LocalDateTime.now().isBefore(lot.getEndDateTime()) &&
-                !userMapper.toUser(lot.getCreator()).equals(bid.getUser()) &&
+                !lot.getCreator().getEmail().equals(authService.getCurrentUsersEmail()) &&
                 ((lot.getCurrentBid() != null && bid.getPrice() - lot.getCurrentBid().getPrice() >= lot.getMinIncrease()) ||
                 (lot.getCurrentBid() == null && bid.getPrice() >= lot.getStartPrice()));
     }
