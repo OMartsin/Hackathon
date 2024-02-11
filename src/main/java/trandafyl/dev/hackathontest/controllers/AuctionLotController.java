@@ -64,7 +64,7 @@ public class AuctionLotController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("users/{id}")
+    @GetMapping("users/{id}/")
     public ResponseEntity<AuctionLotListResponse> getUsersLots(@PathVariable long id){
         var user = auctionLotService.getUserLots(id);
 
