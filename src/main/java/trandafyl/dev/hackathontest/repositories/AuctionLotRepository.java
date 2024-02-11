@@ -15,8 +15,14 @@ import java.util.List;
 public interface AuctionLotRepository extends JpaRepository<AuctionLot, Long> {
     List<AuctionLot> findAllByCreatorId(Long id);
 
+    @Query("SELECT a FROM AuctionLot a JOIN a.categories c " + "WHERE c IN :categories")
+    List<AuctionLot> findByCategories(@Param("categories") List<AuctionCategory> categories);
+
     @Query("SELECT a FROM AuctionLot a JOIN a.categories c " + "WHERE c IN :categories AND " + "(COALESCE((SELECT MAX(b.price) FROM AuctionBid b WHERE b.auctionLot = a), a.startPrice) BETWEEN :minValue AND :maxValue)")
     Page<AuctionLot> findByCategoriesAndPriceRange(@Param("categories") List<AuctionCategory> categories,
                                                    @Param("minValue") Double minValue,
                                                    @Param("maxValue") Double maxValue, Pageable pageable);
+
+    @Query("SELECT a FROM AuctionLot a WHERE (COALESCE((SELECT MAX(b.price) FROM AuctionBid b WHERE b.auctionLot = a), a.startPrice) BETWEEN :minValue AND :maxValue)")
+    Page<AuctionLot> findByPriceRange(@Param("minValue") Double minValue, @Param("maxValue") Double maxValue, Pageable pageable);
 }

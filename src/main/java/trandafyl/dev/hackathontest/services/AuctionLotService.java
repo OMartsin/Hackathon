@@ -2,7 +2,9 @@ package trandafyl.dev.hackathontest.services;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +24,7 @@ import java.util.stream.Stream;
 
 @Service
 @AllArgsConstructor
+@Log4j2
 @Transactional
 public class AuctionLotService {
 
@@ -32,10 +35,9 @@ public class AuctionLotService {
 
     public PageResponse<Page<AuctionLotListResponse.AuctionLotPartialResponse>> getAuctions(int pageNumber, int pageSize, double minPrice, double maxPrice, List<AuctionCategory> categories) {
         var pageRequest = PageRequest.of(pageNumber, pageSize);
-        Page<AuctionLot> auctions = (categories == null) ?
-                auctionRepository.findAll(pageRequest) :
-                auctionRepository.findByCategoriesAndPriceRange(categories, minPrice, maxPrice, pageRequest);
-
+        Page<AuctionLot> auctions = (categories == null)
+                ? auctionRepository.findByPriceRange(minPrice, maxPrice, pageRequest)
+                : auctionRepository.findByCategoriesAndPriceRange(categories, minPrice, maxPrice, pageRequest);
         return new PageResponse<>(auctions.map(lotMapper::mapToPartialResponseDTO), auctionRepository.count());
     }
 
