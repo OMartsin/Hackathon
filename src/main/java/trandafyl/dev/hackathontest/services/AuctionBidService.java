@@ -9,10 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import trandafyl.dev.hackathontest.config.AuthorizationValidator;
 import trandafyl.dev.hackathontest.config.BidPlacingException;
-import trandafyl.dev.hackathontest.dto.PageResponse;
-import trandafyl.dev.hackathontest.dto.AuctionBidRequest;
-import trandafyl.dev.hackathontest.dto.AuctionBidResponse;
-import trandafyl.dev.hackathontest.dto.AuctionLotResponse;
+import trandafyl.dev.hackathontest.dto.*;
 import trandafyl.dev.hackathontest.events.models.BidUpdateEvent;
 import trandafyl.dev.hackathontest.mappers.AuctionBidMapper;
 import trandafyl.dev.hackathontest.mappers.UserMapper;
@@ -97,6 +94,12 @@ public class AuctionBidService {
         authValidator.checkEditAuthority(bidder);
 
         auctionBidRepository.deleteById(bidId);
+    }
+
+    public PageResponse<Page<AuctionBidToUserResponse>> getUserBids(long userId, int pageNumber, int pageSize) {
+        var bids = auctionBidRepository.findByUserId(PageRequest.of(pageNumber, pageSize), userId);
+
+        return new PageResponse<>(bids.map(bidMapper::mapToUserResponseDTO), auctionBidRepository.count());
     }
 
     private boolean isValidBid(AuctionLotResponse lot, AuctionBid bid){

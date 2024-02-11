@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trandafyl.dev.hackathontest.dto.AuctionBidRequest;
 import trandafyl.dev.hackathontest.dto.AuctionBidResponse;
+import trandafyl.dev.hackathontest.dto.AuctionBidToUserResponse;
 import trandafyl.dev.hackathontest.dto.PageResponse;
 import trandafyl.dev.hackathontest.services.AuctionBidService;
 
@@ -55,5 +56,14 @@ public class AuctionBidController {
         auctionBidService.deleteBid(bid_id);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("users/{user_id}/bids/")
+    public ResponseEntity<PageResponse<Page<AuctionBidToUserResponse>>> getUserBids(@PathVariable long user_id,
+                                                                                    @RequestParam(required = false, defaultValue = "0") int pageNumber,
+                                                                                    @RequestParam(required = false, defaultValue = "100") int pageSize) {
+        var bids = auctionBidService.getUserBids(user_id, pageNumber, pageSize);
+
+        return ResponseEntity.ok(bids);
     }
 }
