@@ -65,6 +65,9 @@ public class AuctionLot {
     @OneToMany(mappedBy = "auctionLot")
     private List<AuctionBid> auctionBids = new ArrayList<>();
 
+    @OneToMany(mappedBy = "auctionLot")
+    private List<AuctionLotChatMessage> auctionLotChatMessages = new ArrayList<>();
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User creator;

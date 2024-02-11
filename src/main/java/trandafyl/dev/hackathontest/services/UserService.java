@@ -26,6 +26,10 @@ public class UserService {
         return userRepository.findByEmail(email).map(userMapper::toUserResponse);
     }
 
+    public User getUserEntity(String email){
+        return userRepository.findByEmail(email).orElseThrow();
+    }
+
     public UserResponse addUser(User newUser){
         var user = userRepository.save(newUser);
 
