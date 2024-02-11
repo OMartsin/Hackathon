@@ -37,7 +37,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/", "/error", "/login/**", "/webjars/**", "/websocket/**", "/search/**").permitAll()
                             .requestMatchers(HttpMethod.GET, "/auction-lots/", "/auction-lots/{id}/",
-                                    "/auction-lots/{lot_id}/bids/", "/auction-lots/{lot_id}/bids/{bid_id}/", "categories/"
+                                    "/auction-lots/{lot_id}/bids/", "/auction-lots/{lot_id}/bids/{bid_id}/", "categories/",
                                     "/auction-lots/{id}/chat/subscribe/").permitAll()
                             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                     .anyRequest().authenticated();
